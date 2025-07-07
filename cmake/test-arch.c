@@ -12,7 +12,8 @@
 ////////////////////////////////////////////////////////////////////////////////
 
 // ARM 64-Bit
-#if defined(__aarch64__)
+#if defined(__aarch64__) \
+    || defined(_M_ARM64)
 #error ##arch=arm64##
 
 // ARM 32-Bit

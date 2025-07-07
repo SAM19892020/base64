@@ -8,13 +8,7 @@
 #include "config.h"
 #include "../../env.h"
 
-#ifdef __aarch64__
-#  if (defined(__ARM_NEON__) || defined(__ARM_NEON)) && HAVE_NEON64
-#    define BASE64_USE_NEON64
-#  endif
-#endif
-
-#ifdef BASE64_USE_NEON64
+#if HAVE_NEON64
 #include <arm_neon.h>
 
 // Only enable inline assembly on supported compilers.
@@ -66,7 +60,7 @@ load_64byte_table (const uint8_t *p)
 # include "enc_loop.c"
 #endif
 
-#endif	// BASE64_USE_NEON64
+#endif	// HAVE_NEON64
 
 // Stride size is so large on these NEON 64-bit functions
 // (48 bytes encode, 64 bytes decode) that we inline the
@@ -75,7 +69,7 @@ load_64byte_table (const uint8_t *p)
 void
 base64_stream_encode_neon64 BASE64_ENC_PARAMS
 {
-#ifdef BASE64_USE_NEON64
+#if HAVE_NEON64
 	#include "../generic/enc_head.c"
 	enc_loop_neon64(&s, &slen, &o, &olen);
 	enc_loop_generic_64(&s, &slen, &o, &olen);
@@ -88,7 +82,7 @@ base64_stream_encode_neon64 BASE64_ENC_PARAMS
 int
 base64_stream_decode_neon64 BASE64_DEC_PARAMS
 {
-#ifdef BASE64_USE_NEON64
+#if HAVE_NEON64
 	#include "../generic/dec_head.c"
 	dec_loop_neon64(&s, &slen, &o, &olen);
 	dec_loop_generic_32(&s, &slen, &o, &olen);
